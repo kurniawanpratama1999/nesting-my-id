@@ -9,6 +9,7 @@ import Layout from "./components/Layout";
 
 // PAGE
 import Page_Home from "./pages/Home/Page_Home";
+import Page_About from "./pages/About/Page_About";
 import Page_Login from "./pages/Login/Page_Login";
 import Page_Register from "./pages/Register/Page_Register";
 import Page_CreateAndUpdate from "./pages/CreateAndUpdate/Page_CreateAndUpdate";
@@ -42,7 +43,7 @@ createRoot(document.getElementById("root")).render(
       >
         <Route path="home" element={<Page_Home />} />
         <Route path="guide" element={<Page_NotFound />} />
-        <Route path="about" element={<Page_NotFound />} />
+        <Route path="about" element={<Page_About />} />
         <Route path="login" element={<Page_Login />} />
         <Route path="register" element={<Page_Register />} />
         <Route path="forget-password" element={<Page_ForgetPassword />} />
