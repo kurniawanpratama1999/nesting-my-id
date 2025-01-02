@@ -10,7 +10,7 @@ function Page_Home() {
       className="content-center justify-items-center gap-10"
     >
       <h1 className="text-4xl font-semibold font-mono">Nesting My ID</h1>
-      <Box className="justify-center gap-10">
+      <Box className="flex-wrap justify-center gap-10">
         <Comp_Card
           bgColor="emerald"
           title="Satu Link"
