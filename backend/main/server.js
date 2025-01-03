@@ -12,6 +12,8 @@ import { authControl } from "../controllers/authControl.js";
 import { AllRoute } from "../routers/allRoute.js";
 import middleware from "../middleware/middleware.js";
 
+// edited by termux
+
 const allowedAccess = [process.env.ORIGIN_1, process.env.ORIGIN_2];
 const app = express();
 app.use(express.json());
