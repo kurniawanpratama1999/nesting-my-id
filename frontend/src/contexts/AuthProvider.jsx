@@ -1,9 +1,9 @@
-import api_collection from '../api/api_collection';
+import api_collection from "../api/api_collection";
 
-import { useEffect, useState } from 'react';
-import { createContext } from 'react';
-import { useLocation } from 'react-router';
-import hit_api from '../utils/fetcher';
+import { useEffect, useState } from "react";
+import { createContext } from "react";
+import { useLocation } from "react-router";
+import hit_api from "../utils/fetcher";
 
 export const AuthContext = createContext();
 
@@ -13,7 +13,7 @@ const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const net = api_collection.auth.protectedPage;
-    hit_api(net, 'POST')
+    hit_api(net, "POST")
       .then((res) => {
         setIsAuth(res.success);
       })

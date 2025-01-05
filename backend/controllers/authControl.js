@@ -250,17 +250,17 @@ export const authControl = {
     }
   },
   logout: async (req, res) => {
-    res
-      .clearCookie("SECRET_TOKEN", {
-        httpOnly: true,
-        secure: false,
-        samesite: "Strict",
-      })
-      .clearCookie("REFRESH_TOKEN", {
-        httpOnly: true,
-        secure: false,
-        samesite: "Strict",
-      });
+    res.clearCookie("SECRET_TOKEN", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
+    
+    res.clearCookie("REFRESH_TOKEN", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
 
     return res.json({ success: true, message: "Berhasil Logout" });
   },

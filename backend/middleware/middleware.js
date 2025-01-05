@@ -15,7 +15,7 @@ const middleware = {
 
     // GET secret cookie
     const SECRET_TOKEN =
-      req.cookies.SECRET_TOKEN || req.headers["authorization"];
+      req.cookies.SECRET_TOKEN || (req.headers["authorization"] && req.headers["authorization"].split(" ")[1]);
 
     // validation: check if secret cookie is exist
     if (!SECRET_TOKEN)

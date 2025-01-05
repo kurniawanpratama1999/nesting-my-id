@@ -1,7 +1,6 @@
 // DEPENDENCIES
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router";
-import { Suspense, lazy } from "react";
 import "tailwindcss/tailwind.css";
 
 // LAYOUT
@@ -42,8 +41,8 @@ createRoot(document.getElementById("root")).render(
         }
       >
         <Route path="home" element={<Page_Home />} />
-        <Route path="guide" element={<Page_NotFound />} />
         <Route path="about" element={<Page_About />} />
+
         <Route path="login" element={<Page_Login />} />
         <Route path="register" element={<Page_Register />} />
         <Route path="forget-password" element={<Page_ForgetPassword />} />

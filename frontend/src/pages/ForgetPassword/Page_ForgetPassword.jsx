@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Button from "../../components/Button";
 import Container from "../../components/Container";
 import Form from "../../components/Form";
@@ -17,17 +17,26 @@ const Page_ForgetPassword = () => {
   const [new_password, setNewPassword] = useState("");
   const [confirm_password, setConfirmPassword] = useState("");
 
+  // OTP Setting
+  const [enableTimeOtp, setEnableTimeOtp] = useState(120);
+  const [minute, setMinutes] = useState(Math.floor(enableTimeOtp / 60));
+  const [seconds, setSeconds] = useState(enableTimeOtp % 60);
+  const [isEnableOtp, setIsEnableOtp] = useState(false);
+  const [lastClick, setLastclick] = useState(null);
+  const timeIntervalID = useRef(null);
+
   const handleBack = () => {
-    setStepCounter((prev) => (prev <= 0 ? 0 : prev - 1));
+    setStepCounter((prev) => 0);
     setStep(steps[stepCounter]);
   };
   const handleSubmitEmail = () => {
     setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
-    setStep(steps[stepCounter]);
+    setStep(steps[stepCounter + 1]);
+    setLastclick(Date);
   };
   const handleSubmitOtp = () => {
     setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
-    setStep(steps[stepCounter]);
+    setStep(steps[stepCounter + 1]);
   };
   const handleSubmitPassword = () => {
     setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
@@ -35,12 +44,27 @@ const Page_ForgetPassword = () => {
   };
 
   useEffect(() => {
-    console.log(step)
-  }, [step]);
+    setIsEnableOtp(false);
+    clearInterval(timeIntervalID.current);
 
-  useEffect(() => {
-    console.log(stepCounter)
-  }, [stepCounter]);
+    if (step === "otp" && lastClick) {
+      timeIntervalID.current = setInterval(() => {
+        if (enableTimeOtp < 0) {
+          clearInterval(timeIntervalID.current);
+          setIsEnableOtp(true);
+          return setEnableTimeOtp(0);
+        }
+        console.log(enableTimeOtp)
+        setMinutes(Math.floor(enableTimeOtp / 60));
+        setSeconds(Math.floor(enableTimeOtp % 60));
+        return setEnableTimeOtp(enableTimeOtp - 1);
+      }, 100);
+    }
+
+    return () => {
+      clearInterval(timeIntervalID.current);
+    };
+  }, [lastClick, enableTimeOtp]);
 
   return (
     <Container className="relative justify-center items-center">
@@ -57,12 +81,14 @@ const Page_ForgetPassword = () => {
         />
 
         {step == "otp" && (
-          <Input
-            htmlFor="otp"
-            title="otp"
-            value={otp}
-            onChange={({ target }) => setOtp(target.value)}
-          />
+          <>
+            <Input
+              htmlFor="otp"
+              title="otp"
+              value={otp}
+              onChange={({ target }) => setOtp(target.value)}
+            />
+          </>
         )}
 
         {step == "password" && (
@@ -84,14 +110,31 @@ const Page_ForgetPassword = () => {
           </>
         )}
 
-        <Wrapper className="gap-4" border="none">
-          <Button
-            onClick={handleBack}
-            type="button"
-            label="Back"
-            className="text-sm"
-            bgColor="red"
-          />
+        <Wrapper display="grid" className="grid-cols-2 gap-4" border="none">
+          {step === "email" || (
+            <>
+              <div className="col-span-2 text-sm flex flex-col items-center justify-center gap-2">
+                <p>Kirim ulang kode otp</p>
+                <p>{`${minute}:${seconds}`}</p>
+                {isEnableOtp && (
+                  <Button
+                    width="fit"
+                    className="px-5"
+                    bgColor="gray"
+                    label="Send Otp"
+                  />
+                )}
+              </div>
+              <Button
+                onClick={handleBack}
+                type="button"
+                label={step === "otp" ? "Change Email" : "Ulangi"}
+                className="text-sm"
+                bgColor="red"
+              />
+            </>
+          )}
+
           {step == "email" && (
             <Button
               onClick={handleSubmitEmail}
