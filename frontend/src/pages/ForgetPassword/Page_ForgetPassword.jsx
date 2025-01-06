@@ -27,16 +27,26 @@ const Page_ForgetPassword = () => {
 
   const handleBack = () => {
     setStepCounter((prev) => 0);
-    setStep(steps[stepCounter]);
+    setStep(steps[0]);
   };
   const handleSubmitEmail = () => {
     setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
     setStep(steps[stepCounter + 1]);
-    setLastclick(Date);
+
+    if (!lastClick || isEnableOtp) {
+      setLastclick(new Date());
+      setIsEnableOtp(false);
+    }
   };
   const handleSubmitOtp = () => {
     setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
     setStep(steps[stepCounter + 1]);
+  };
+  const handleSendOtp = () => {
+    if (isEnableOtp) {
+      setIsEnableOtp(false);
+      setLastclick(new Date());
+    }
   };
   const handleSubmitPassword = () => {
     setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
@@ -44,27 +54,31 @@ const Page_ForgetPassword = () => {
   };
 
   useEffect(() => {
+    let spendTime = 120;
     setIsEnableOtp(false);
     clearInterval(timeIntervalID.current);
 
-    if (step === "otp" && lastClick) {
+    if (step === "otp" && lastClick && !isEnableOtp) {
       timeIntervalID.current = setInterval(() => {
-        if (enableTimeOtp < 0) {
+        spendTime -= 1;
+        setMinutes(Math.floor(spendTime / 60));
+        setSeconds(Math.floor(spendTime % 60));
+
+        if (spendTime <= 0) {
           clearInterval(timeIntervalID.current);
           setIsEnableOtp(true);
-          return setEnableTimeOtp(0);
+          timeIntervalID.current == null;
+          return 0;
         }
-        console.log(enableTimeOtp)
-        setMinutes(Math.floor(enableTimeOtp / 60));
-        setSeconds(Math.floor(enableTimeOtp % 60));
-        return setEnableTimeOtp(enableTimeOtp - 1);
-      }, 100);
+      }, 1000);
     }
 
     return () => {
       clearInterval(timeIntervalID.current);
     };
-  }, [lastClick, enableTimeOtp]);
+  }, [lastClick]);
+
+  useEffect(() => {}, [isEnableOtp, step]);
 
   return (
     <Container className="relative justify-center items-center">
@@ -78,6 +92,10 @@ const Page_ForgetPassword = () => {
           title="email"
           value={email}
           onChange={({ target }) => setEmail(target.value)}
+          readOnly={step !== "email" ? 1 : 0}
+          classNameInput={
+            ["otp", "password"].includes(step) ? "text-gray-500" : "text-black"
+          }
         />
 
         {step == "otp" && (
@@ -114,15 +132,27 @@ const Page_ForgetPassword = () => {
           {step === "email" || (
             <>
               <div className="col-span-2 text-sm flex flex-col items-center justify-center gap-2">
-                <p>Kirim ulang kode otp</p>
-                <p>{`${minute}:${seconds}`}</p>
-                {isEnableOtp && (
+                {step === "otp" && !isEnableOtp ? (
+                  <>
+                    <p>Kirim ulang kode otp</p>
+                    <p>{`${minute.toString().padStart(2, 0)}:${seconds
+                      .toString()
+                      .padStart(2, 0)}`}</p>
+                  </>
+                ) : (
+                  false
+                )}
+
+                {step == "otp" && isEnableOtp ? (
                   <Button
                     width="fit"
                     className="px-5"
                     bgColor="gray"
                     label="Send Otp"
+                    onClick={handleSendOtp}
                   />
+                ) : (
+                  false
                 )}
               </div>
               <Button
@@ -130,7 +160,7 @@ const Page_ForgetPassword = () => {
                 type="button"
                 label={step === "otp" ? "Change Email" : "Ulangi"}
                 className="text-sm"
-                bgColor="red"
+                bgColor={step !== "otp" ? "red" : "blue"}
               />
             </>
           )}
@@ -140,7 +170,7 @@ const Page_ForgetPassword = () => {
               onClick={handleSubmitEmail}
               type="button"
               label="Check Email"
-              className="text-sm"
+              className="text-sm col-span-2"
               bgColor="emerald"
             />
           )}

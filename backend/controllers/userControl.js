@@ -5,6 +5,7 @@ import randomLinkGenerator from "../utils/randomLinkGenerator.js";
 // DEPENDENCIES
 import bcrpyt from "bcryptjs";
 import { passwordRegex } from "../regexs/passwordRegex.js";
+import { emailRegex } from "../regexs/emailRegex.js";
 
 export const userControl = {
   createLink: async (req, res) => {
@@ -611,5 +612,117 @@ export const userControl = {
       });
     }
   },
-  readOTP: async (req, res) => {},
+  checkEmailAndSendOtp: async (req, res) => {
+    const { email } = req.body;
+
+    if (!email)
+      return res.json({ success: false, message: "Email cannot be empty" });
+
+    if (emailRegex(email) === false)
+      return res.json({ success: false, message: "Email is not valid" });
+
+    try {
+      // RANDOM generator 6 until 10 characters
+      const newOTP = randomLinkGenerator();
+
+      const findUser = await authModel.findUserByEmail(email);
+
+      if (findUser.length === 0)
+        return res.json({ success: false, message: "Email cannot be find!" });
+
+      // Execute update otp
+      const updateOTP = await userModel.changeOTP(newOTP, findUser[0].email);
+
+      // validation check if any changes in row of users table
+      if (updateOTP.affectedRows === 0)
+        return res.json({
+          success: false,
+          message: "Update OTP is failed!",
+        });
+
+      return res.json({
+        success: true,
+        message: "Email is correct OTP was send to your email!",
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: "Server Error!",
+      });
+    }
+  },
+  removeOTP: async (req, res) => {
+    const { email } = req.body;
+
+    if (!email)
+      return res.json({ success: false, message: "Email cannot be empty" });
+
+    if (emailRegex(email) === false)
+      return res.json({ success: false, message: "Email is not valid" });
+
+    try {
+      const findUser = await authModel.findUserByEmail(email);
+
+      if (findUser.length === 0)
+        return res.json({ success: false, message: "Email cannot be find!" });
+
+      // Execute update otp
+      const updateOTP = await userModel.changeOTP("EMPTY!", findUser[0].email);
+
+      // validation check if any changes in row of users table
+      if (updateOTP.affectedRows === 0)
+        return res.json({
+          success: false,
+          message: "Update OTP is failed!",
+        });
+
+      return res.json({
+        success: true,
+        message: "Remove otp is success!",
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: "Server Error!",
+      });
+    }
+  },
+  checkOTP: async (req, res) => {
+    const { email, otp } = req.body;
+    if (!email)
+      return res.json({ success: false, message: "Email cannot be empty" });
+
+    if (emailRegex(email) === false)
+      return res.json({ success: false, message: "Email is not valid" });
+
+    if (!otp)
+      return res.json({ success: false, message: "Otp cannot be empty" });
+
+    try {
+      const findUser = await userModel.readOTP(email, otp);
+
+      if (findUser.length === 0)
+        return res.json({ success: false, message: "Email or OTP is Wrong" });
+
+      return res.json({
+        success: true,
+        message: "OTP is correct!",
+      });
+    } catch (error) {
+      return res.json({
+        success: true,
+        message: "OTP is correct!",
+      });
+    }
+  },
+  checkPassword: async (req, res) => {
+    const {email, password, confirm_password} = req.body
+    if (!email) return
+    if (!password) return
+    if (!confirm_password) return
+    if (emailRegex(email) === false) return
+    if (passwordRegex(password) === false) return
+    if (passwordRegex(confirm_password) === false) return
+
+  },
 };

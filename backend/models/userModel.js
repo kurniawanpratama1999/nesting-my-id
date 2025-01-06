@@ -176,13 +176,13 @@ export const userModel = {
       );
     });
   },
-  changeOTP: (user_id, newOTP, email) => {
+  changeOTP: (newOTP, email) => {
     return new Promise((resolve, reject) => {
       const query = `
           UPDATE users
           SET otp = ?, updated_at = current_timestamp()
-          WHERE id = ? AND email = ?`;
-      database.execute(query, [newOTP, user_id, email], (err, results) => {
+          email = ?`;
+      database.execute(query, [newOTP, email], (err, results) => {
         if (err) {
           reject(err);
         } else {
@@ -191,12 +191,12 @@ export const userModel = {
       });
     });
   },
-  readOTP: (user_id, email, OTP) => {
+  readOTP: (email, OTP) => {
     return new Promise((resolve, reject) => {
       const query = `
         SELECT otp FROM users
-        WHERE id = ? AND email = ? AND otp = ?`;
-      database.execute(query, [user_id, email, OTP], (err, results) => {
+        WHERE email = ? AND otp = ?`;
+      database.execute(query, [email, OTP], (err, results) => {
         if (err) {
           reject(err);
         } else {
