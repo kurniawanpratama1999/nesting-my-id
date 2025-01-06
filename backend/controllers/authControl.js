@@ -67,7 +67,7 @@ export const authControl = {
       if (comparePassword === false)
         return res.json({
           success: false,
-          message: "Wrong Password",
+          message: "Wrong Password!",
         });
 
       // create payload for jwt

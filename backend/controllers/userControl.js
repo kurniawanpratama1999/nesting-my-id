@@ -570,48 +570,6 @@ export const userControl = {
       });
     }
   },
-  changeOTP: async (req, res) => {
-    // GET from jwt secret
-    const { user_id } = req;
-
-    // RANDOM generator 6 until 10 characters
-    const newOTP = randomLinkGenerator();
-
-    try {
-      const findUser = await authModel.findUserByID(user_id);
-
-      if (findUser.length === 0)
-        return res.json({ success: false, message: "UserID cannot be find!" });
-
-      if (findUser[0].id !== user_id)
-        return res.json({ success: false, message: "UserID not same!" });
-
-      // Execute update otp
-      const updateOTP = await userModel.changeOTP(
-        user_id,
-        newOTP,
-        findUser[0].email
-      );
-
-      // validation check if any changes in row of users table
-      if (updateOTP.affectedRows === 0)
-        return res.json({
-          success: false,
-          message: "Update OTP is failed!",
-        });
-
-      // Success
-      return res.json({
-        success: true,
-        message: "Update OTP is success!",
-      });
-    } catch (error) {
-      return res.json({
-        success: false,
-        message: "Change OTP is Error, Try again later!",
-      });
-    }
-  },
   checkEmailAndSendOtp: async (req, res) => {
     const { email } = req.body;
 
@@ -632,12 +590,30 @@ export const userControl = {
 
       // Execute update otp
       const updateOTP = await userModel.changeOTP(newOTP, findUser[0].email);
+      console.log(updateOTP);
 
       // validation check if any changes in row of users table
       if (updateOTP.affectedRows === 0)
         return res.json({
           success: false,
           message: "Update OTP is failed!",
+        });
+
+      const salt = bcrpyt.genSaltSync();
+      const convertEmail = bcrpyt.hashSync(email, salt);
+      const convertOtp = bcrpyt.hashSync(newOTP, salt);
+
+      res
+        .cookie("EMAIL", convertEmail, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "Strict",
+        })
+        .cookie("OTP", convertOtp, {
+          httpOnly: true,
+          secure: false,
+          sameSite: "Strict",
+          maxAge: 1000 * 60 * 2,
         });
 
       return res.json({
@@ -652,22 +628,25 @@ export const userControl = {
     }
   },
   removeOTP: async (req, res) => {
-    const { email } = req.body;
+    const emailCookie = req.cookies.EMAIL;
+    const emailInput = req.body.email;
 
-    if (!email)
-      return res.json({ success: false, message: "Email cannot be empty" });
+    if (!emailCookie || !emailInput)
+      return res.json({ success: false, message: "Email not found!" });
 
-    if (emailRegex(email) === false)
-      return res.json({ success: false, message: "Email is not valid" });
+    const compareEmail = bcrpyt.compareSync(emailInput, emailCookie);
+
+    if (!compareEmail)
+      return res.json({ success: false, message: "Email do not match!" });
 
     try {
-      const findUser = await authModel.findUserByEmail(email);
+      const findUser = await authModel.findUserByEmail(emailInput);
 
       if (findUser.length === 0)
         return res.json({ success: false, message: "Email cannot be find!" });
 
       // Execute update otp
-      const updateOTP = await userModel.changeOTP("EMPTY!", findUser[0].email);
+      const updateOTP = await userModel.changeOTP("", findUser[0].email);
 
       // validation check if any changes in row of users table
       if (updateOTP.affectedRows === 0)
@@ -675,6 +654,12 @@ export const userControl = {
           success: false,
           message: "Update OTP is failed!",
         });
+
+      res.clearCookie("OTP", {
+        httpOnly: true,
+        secure: false,
+        sameSite: "Strict",
+      });
 
       return res.json({
         success: true,
@@ -688,21 +673,28 @@ export const userControl = {
     }
   },
   checkOTP: async (req, res) => {
-    const { email, otp } = req.body;
-    if (!email)
-      return res.json({ success: false, message: "Email cannot be empty" });
+    const otpInput = req.body.otp;
+    const otpCookie = req.cookies.OTP;
 
-    if (emailRegex(email) === false)
-      return res.json({ success: false, message: "Email is not valid" });
+    const emailInput = req.body.email;
+    const emailCookie = req.cookies.EMAIL;
+    if (!otpInput || !otpCookie || !emailInput || !emailCookie)
+      return res.json({ success: false, message: "Cannot be empty!" });
 
-    if (!otp)
-      return res.json({ success: false, message: "Otp cannot be empty" });
+    if (emailRegex(emailInput) === false)
+      return res.json({ success: false, message: "Email is not valid!" });
+
+    const compareEmail = bcrpyt.compareSync(emailInput, emailCookie);
+    const compareOtp = bcrpyt.compareSync(otpInput, otpCookie);
+
+    if (!compareEmail || !compareOtp)
+      return res.json({ success: false, message: "otp or email not match!" });
 
     try {
-      const findUser = await userModel.readOTP(email, otp);
+      const findUser = await userModel.readOTP(emailInput, otpInput);
 
       if (findUser.length === 0)
-        return res.json({ success: false, message: "Email or OTP is Wrong" });
+        return res.json({ success: false, message: "Wrong otp or email!" });
 
       return res.json({
         success: true,
@@ -716,13 +708,67 @@ export const userControl = {
     }
   },
   checkPassword: async (req, res) => {
-    const {email, password, confirm_password} = req.body
-    if (!email) return
-    if (!password) return
-    if (!confirm_password) return
-    if (emailRegex(email) === false) return
-    if (passwordRegex(password) === false) return
-    if (passwordRegex(confirm_password) === false) return
+    const { password, confirm_password } = req.body;
+    const emailInput = req.body.email;
+    const emailCookie = req.cookies.EMAIL;
+    try {
+      if (!emailInput)
+        return res.json({ success: false, message: "Email not found!" });
 
+      const compareEmail = bcrpyt.compareSync(emailInput, emailCookie);
+      if (!compareEmail)
+        return res.json({ success: false, message: "Email not match!" });
+
+      if (!emailRegex(emailInput))
+        return res.json({ success: false, message: "Email not valid" });
+
+      if (!password)
+        return res.json({ success: false, message: "Password not found" });
+
+      if (!passwordRegex(password))
+        return res.json({ success: false, message: "Password not valid" });
+
+      if (!confirm_password)
+        return res.json({
+          success: false,
+          message: "confirm password not found",
+        });
+
+      if (!passwordRegex(confirm_password))
+        return res.json({
+          success: false,
+          message: "confirm password not valid",
+        });
+
+      if (password !== confirm_password)
+        return res.json({
+          success: false,
+          message: "Password and confirm password not match",
+        });
+
+      const salt = bcrpyt.genSaltSync();
+      const convertPassword = bcrpyt.hashSync(password, salt);
+
+      const execute = await userModel.changePasswordWhenForgot(
+        emailInput,
+        convertPassword
+      );
+
+      if (execute.affectedRows === 0)
+        return res.json({
+          success: false,
+          message: "Change password is failed!",
+        });
+
+      return res.json({
+        success: true,
+        message: "Change password is success!",
+      });
+    } catch (error) {
+      return res.json({
+        success: false,
+        message: "Server error!",
+      });
+    }
   },
 };

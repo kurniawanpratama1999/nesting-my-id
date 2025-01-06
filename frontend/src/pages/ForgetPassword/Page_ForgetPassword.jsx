@@ -1,11 +1,16 @@
 import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router";
 import Button from "../../components/Button";
 import Container from "../../components/Container";
 import Form from "../../components/Form";
 import Input from "../../components/Input";
 import Wrapper from "../../components/Wrapper";
+import hit_api, { fetcher } from "../../utils/fetcher";
+import api_collection from "../../api/api_collection";
 
 const Page_ForgetPassword = () => {
+  const navigate = useNavigate();
+
   // Setting Step
   const steps = ["email", "otp", "password"];
   const [stepCounter, setStepCounter] = useState(0);
@@ -25,32 +30,78 @@ const Page_ForgetPassword = () => {
   const [lastClick, setLastclick] = useState(null);
   const timeIntervalID = useRef(null);
 
-  const handleBack = () => {
+  const handleBack = (e) => {
+    e.preventDefault();
     setStepCounter((prev) => 0);
     setStep(steps[0]);
   };
-  const handleSubmitEmail = () => {
-    setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
-    setStep(steps[stepCounter + 1]);
+  const handleSubmitEmail = async (e) => {
+    e.preventDefault();
+    fetcher("PUT", null, { email }, api_collection.user.checkEmail)
+      .then((res) => {
+        console.log(res.message);
+        if (res.success) {
+          setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
+          setStep(steps[stepCounter + 1]);
 
-    if (!lastClick || isEnableOtp) {
-      setLastclick(new Date());
-      setIsEnableOtp(false);
-    }
+          if (!lastClick || isEnableOtp) {
+            setLastclick(new Date());
+            setIsEnableOtp(false);
+          }
+        }
+      })
+      .catch((err) => console.log(err));
   };
-  const handleSubmitOtp = () => {
-    setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
-    setStep(steps[stepCounter + 1]);
+  const handleSubmitOtp = async (e) => {
+    e.preventDefault();
+
+    fetcher("POST", null, { email, otp }, api_collection.user.checkOtp)
+      .then((res) => {
+        console.log(res.message);
+        if (res.success) {
+          setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
+          setStep(steps[stepCounter + 1]);
+        }
+      })
+      .catch((err) => console.log(err));
   };
-  const handleSendOtp = () => {
-    if (isEnableOtp) {
-      setIsEnableOtp(false);
-      setLastclick(new Date());
-    }
+  const handleSendOtp = async (e) => {
+    e.preventDefault();
+    fetcher("PUT", null, { email }, api_collection.user.checkEmail)
+      .then((res) => {
+        console.log(res.message);
+        if (res.success) {
+          setIsEnableOtp(false);
+          setLastclick(new Date());
+        }
+      })
+      .catch((err) => console.log(err));
   };
-  const handleSubmitPassword = () => {
-    setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
-    setStep(steps[stepCounter]);
+  const handleSubmitPassword = async (e) => {
+    e.preventDefault();
+    fetcher(
+      "PUT",
+      null,
+      { email, password: new_password, confirm_password },
+      api_collection.user.checkPassword
+    )
+      .then((res) => {
+        console.log(res.message);
+        if (res.success) {
+          fetcher(
+            "DELETE",
+            null,
+            { email },
+            api_collection.user.removeOtp
+          ).then((res) => {
+            console.log(res.message);
+            if (res.success) {
+              navigate("/login", { replace: true });
+            }
+          });
+        }
+      })
+      .catch((err) => console.log(err));
   };
 
   useEffect(() => {
@@ -68,6 +119,14 @@ const Page_ForgetPassword = () => {
           clearInterval(timeIntervalID.current);
           setIsEnableOtp(true);
           timeIntervalID.current == null;
+          fetcher(
+            "DELETE",
+            null,
+            { email },
+            api_collection.user.removeOtp
+          ).then((res) => {
+            console.log(res.message);
+          });
           return 0;
         }
       }, 1000);
@@ -83,9 +142,15 @@ const Page_ForgetPassword = () => {
   return (
     <Container className="relative justify-center items-center">
       <Form
-        onSubmit={handleSubmitPassword}
         className="px-2 pt-2"
         title="Forgot Password"
+        onSubmit={
+          step == "email"
+            ? handleSubmitEmail
+            : step === "otp"
+            ? handleSubmitOtp
+            : handleSubmitPassword
+        }
       >
         <Input
           htmlFor="email"
@@ -168,7 +233,6 @@ const Page_ForgetPassword = () => {
           {step == "email" && (
             <Button
               onClick={handleSubmitEmail}
-              type="button"
               label="Check Email"
               className="text-sm col-span-2"
               bgColor="emerald"

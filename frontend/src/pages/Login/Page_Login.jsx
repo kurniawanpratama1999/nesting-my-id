@@ -9,6 +9,7 @@ import api_collection from "../../api/api_collection";
 import { useRef } from "react";
 import { useNavigate } from "react-router";
 import hit_api from "../../utils/fetcher";
+import AskingForgetPassword from "./AskingForgetPassword";
 
 const cssLoadingMessage = cNames(
   {
@@ -38,6 +39,8 @@ export default function Page_Login() {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+
+  const [wrongPassword, setWrongPassword] = useState(0);
 
   const setTimeoutID = useRef(null);
 
@@ -69,6 +72,9 @@ export default function Page_Login() {
             navigate("/collection", { replace: "true" });
           }, 1000);
         } else {
+          if (message.toLowerCase() === "wrong password!") {
+            setWrongPassword((prev) => prev + 1);
+          }
           setIsCorrect(false);
         }
       })
@@ -123,6 +129,9 @@ export default function Page_Login() {
           className="text-sm"
           bgColor="emerald"
         />
+
+        {wrongPassword >= 3 && <AskingForgetPassword />}
+
         <AskingUser />
       </Form>
     </Box>

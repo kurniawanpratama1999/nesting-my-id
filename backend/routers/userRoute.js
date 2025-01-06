@@ -61,4 +61,8 @@ userRouter.put(
   middleware.protected,
   userControl.changePassword
 );
-userRouter.put(process.env.API_PATH_USER_CHANGE_OTP, userControl.changeOTP);
+
+userRouter.put("/check-email-and-send-otp", userControl.checkEmailAndSendOtp);
+userRouter.delete("/remove-otp", userControl.removeOTP);
+userRouter.post("/check-otp", userControl.checkOTP);
+userRouter.put("/check-password", userControl.checkPassword);

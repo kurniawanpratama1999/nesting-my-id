@@ -4,7 +4,6 @@ import { useState } from "react";
 import { NavLink } from "react-router";
 
 export default function Comp_Card({ collection, colIndex, user }) {
-  console.log(collection);
   const [isCloseActions, setIsCloseActions] = useState(false);
   const colors = {
     1: "bg-yellow-400",

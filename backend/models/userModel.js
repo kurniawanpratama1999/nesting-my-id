@@ -1,4 +1,4 @@
-import { database } from '../main/database.js';
+import { database } from "../main/database.js";
 
 export const userModel = {
   createLink: (user_id, link, description, urls) => {
@@ -129,17 +129,28 @@ export const userModel = {
           UPDATE users
           SET password = ?, updated_at = current_timestamp()
           WHERE id = ? AND email = ?`;
-      database.execute(
-        query,
-        [newPassword, user_id, email],
-        (err, results) => {
-          if (err) {
-            reject(err);
-          } else {
-            resolve(results);
-          }
+      database.execute(query, [newPassword, user_id, email], (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
         }
-      );
+      });
+    });
+  },
+  changePasswordWhenForgot: (email, newPassword) => {
+    return new Promise((resolve, reject) => {
+      const query = `
+          UPDATE users
+          SET password = ?, updated_at = current_timestamp()
+          WHERE email = ?`;
+      database.execute(query, [newPassword, email], (err, results) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(results);
+        }
+      });
     });
   },
   changeEmail: (user_id, oldEmail, newEmail) => {
@@ -181,7 +192,7 @@ export const userModel = {
       const query = `
           UPDATE users
           SET otp = ?, updated_at = current_timestamp()
-          email = ?`;
+          WHERE email = ?`;
       database.execute(query, [newOTP, email], (err, results) => {
         if (err) {
           reject(err);

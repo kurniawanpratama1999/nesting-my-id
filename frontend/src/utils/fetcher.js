@@ -1,6 +1,6 @@
 import refreshToken from "./refresh-token";
 
-const fetcher = async (method = "GET", token = null, body = null, net) => {
+export const fetcher = async (method = "GET", token = null, body = null, net) => {
   const options = {};
   options.method = method;
   options.headers = { "Content-Type": "application/json" };
