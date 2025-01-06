@@ -5,8 +5,27 @@ import Container from "../../components/Container";
 import Form from "../../components/Form";
 import Input from "../../components/Input";
 import Wrapper from "../../components/Wrapper";
-import hit_api, { fetcher } from "../../utils/fetcher";
+import { fetcher } from "../../utils/fetcher";
 import api_collection from "../../api/api_collection";
+import cNames from "../../utils/cNames";
+
+const cssLoadingMessage = cNames(
+  {
+    base: "top-16 border-b border-black pb-2 text-lg italic font-semibold",
+  },
+  {
+    isLoading: {
+      true: "fixed",
+      false: "hidden",
+    },
+
+    isCorrect: {
+      true: "text-green-700",
+      false: "text-red-700",
+      null: "text-black",
+    },
+  }
+);
 
 const Page_ForgetPassword = () => {
   const navigate = useNavigate();
@@ -30,6 +49,12 @@ const Page_ForgetPassword = () => {
   const [lastClick, setLastclick] = useState(null);
   const timeIntervalID = useRef(null);
 
+  // IS LOADING
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingMessage, setLoadingMessage] = useState("Searcing Data");
+  const [isCorrect, setIsCorrect] = useState(null);
+  const timeOutID = useRef(null);
+
   const handleBack = (e) => {
     e.preventDefault();
     setStepCounter((prev) => 0);
@@ -37,9 +62,12 @@ const Page_ForgetPassword = () => {
   };
   const handleSubmitEmail = async (e) => {
     e.preventDefault();
+    clearTimeout(timeOutID.current);
+    setIsLoading(true);
     fetcher("PUT", null, { email }, api_collection.user.checkEmail)
       .then((res) => {
-        console.log(res.message);
+        setLoadingMessage(res.message);
+        setIsCorrect(res.success);
         if (res.success) {
           setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
           setStep(steps[stepCounter + 1]);
@@ -50,35 +78,73 @@ const Page_ForgetPassword = () => {
           }
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsCorrect(false);
+        setLoadingMessage("Server Error");
+      })
+      .finally(() => {
+        timeOutID.current = setTimeout(() => {
+          setLoadingMessage("Search Data");
+          setIsLoading(false);
+          setIsCorrect(null);
+        }, 4000);
+      });
   };
   const handleSubmitOtp = async (e) => {
     e.preventDefault();
-
+    clearTimeout(timeOutID.current);
+    setIsLoading(true);
     fetcher("POST", null, { email, otp }, api_collection.user.checkOtp)
       .then((res) => {
-        console.log(res.message);
+        setLoadingMessage(res.message);
+        setIsCorrect(res.success);
         if (res.success) {
           setStepCounter((prev) => (prev >= 2 ? 2 : prev + 1));
           setStep(steps[stepCounter + 1]);
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsCorrect(false);
+        setLoadingMessage("Server Error");
+      })
+      .finally(() => {
+        timeOutID.current = setTimeout(() => {
+          setLoadingMessage("Search Data");
+          setIsLoading(false);
+          setIsCorrect(null);
+        }, 4000);
+      });
   };
+
   const handleSendOtp = async (e) => {
     e.preventDefault();
+    clearTimeout(timeOutID.current);
+    setIsLoading(true);
     fetcher("PUT", null, { email }, api_collection.user.checkEmail)
       .then((res) => {
-        console.log(res.message);
+        setLoadingMessage(res.message);
+        setIsCorrect(res.success);
         if (res.success) {
           setIsEnableOtp(false);
           setLastclick(new Date());
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsCorrect(false);
+        setLoadingMessage("Server Error");
+      })
+      .finally(() => {
+        timeOutID.current = setTimeout(() => {
+          setLoadingMessage("Search Data");
+          setIsLoading(false);
+          setIsCorrect(null);
+        }, 4000);
+      });
   };
   const handleSubmitPassword = async (e) => {
     e.preventDefault();
+    clearTimeout(timeOutID.current);
+    setIsLoading(true);
     fetcher(
       "PUT",
       null,
@@ -86,22 +152,35 @@ const Page_ForgetPassword = () => {
       api_collection.user.checkPassword
     )
       .then((res) => {
-        console.log(res.message);
+        setLoadingMessage(res.message);
+        setIsCorrect(res.success);
         if (res.success) {
-          fetcher(
-            "DELETE",
-            null,
-            { email },
-            api_collection.user.removeOtp
-          ).then((res) => {
-            console.log(res.message);
-            if (res.success) {
-              navigate("/login", { replace: true });
-            }
-          });
+          fetcher("DELETE", null, { email }, api_collection.user.removeOtp)
+            .then((resOfDeleteOtp) => {
+              if (resOfDeleteOtp.success) {
+                navigate("/login", { replace: true });
+              } else {
+                setLoadingMessage(resOfDeleteOtp.message);
+                setIsCorrect(resOfDeleteOtp.success);
+              }
+            })
+            .catch((err) => {
+              setIsCorrect(false);
+              setLoadingMessage("Server Error");
+            });
         }
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        setIsCorrect(false);
+        setLoadingMessage("Server Error");
+      })
+      .finally(() => {
+        timeOutID.current = setTimeout(() => {
+          setLoadingMessage("Search Data");
+          setIsLoading(false);
+          setIsCorrect(null);
+        }, 4000);
+      });
   };
 
   useEffect(() => {
@@ -119,14 +198,24 @@ const Page_ForgetPassword = () => {
           clearInterval(timeIntervalID.current);
           setIsEnableOtp(true);
           timeIntervalID.current == null;
-          fetcher(
-            "DELETE",
-            null,
-            { email },
-            api_collection.user.removeOtp
-          ).then((res) => {
-            console.log(res.message);
-          });
+          fetcher("DELETE", null, { email }, api_collection.user.removeOtp)
+            .then((res) => {
+              if (!res.success) {
+                setLoadingMessage(res.message);
+                setIsCorrect(res.success);
+              }
+            })
+            .catch((err) => {
+              setIsCorrect(false);
+              setLoadingMessage("Server Error");
+            })
+            .finally(() => {
+              timeOutID.current = setTimeout(() => {
+                setLoadingMessage("Search Data");
+                setIsLoading(false);
+                setIsCorrect(null);
+              }, 4000);
+            });
           return 0;
         }
       }, 1000);
@@ -141,6 +230,9 @@ const Page_ForgetPassword = () => {
 
   return (
     <Container className="relative justify-center items-center">
+      <p className={cssLoadingMessage({isCorrect, isLoading})}>
+        {loadingMessage}
+      </p>
       <Form
         className="px-2 pt-2"
         title="Forgot Password"
