@@ -9,6 +9,7 @@ function Page_Home() {
       display="grid"
       className="content-center justify-items-center gap-10"
     >
+      
       <h1 className="text-4xl font-semibold font-mono">Nesting My ID</h1>
       <Box className="flex-wrap justify-center gap-10">
         <Comp_Card
