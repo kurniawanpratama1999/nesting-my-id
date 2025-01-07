@@ -1,11 +1,15 @@
 import { userModel } from "../models/userModel.js";
 import { authModel } from "../models/authModel.js";
 import randomLinkGenerator from "../utils/randomLinkGenerator.js";
+import { passwordRegex } from "../regexs/passwordRegex.js";
+import { emailRegex } from "../regexs/emailRegex.js";
+import transporter from "../middleware/smtp.js";
 
 // DEPENDENCIES
 import bcrpyt from "bcryptjs";
-import { passwordRegex } from "../regexs/passwordRegex.js";
-import { emailRegex } from "../regexs/emailRegex.js";
+import dotenv from 'dotenv'
+
+dotenv.config()
 
 export const userControl = {
   createLink: async (req, res) => {
@@ -590,7 +594,6 @@ export const userControl = {
 
       // Execute update otp
       const updateOTP = await userModel.changeOTP(newOTP, findUser[0].email);
-      console.log(updateOTP);
 
       // validation check if any changes in row of users table
       if (updateOTP.affectedRows === 0)
@@ -615,6 +618,13 @@ export const userControl = {
           sameSite: "Strict",
           maxAge: 1000 * 60 * 2,
         });
+
+      const sendOtpToEmail = await transporter.sendMail({
+        from: process.env.SMTP_EMAIL,
+        to: email,
+        subject: "OTP code from nesting.my.id for change password",
+        text: `Hai ${findUser[0].display_name}, this is your otp code: ${newOTP}.`,
+      });
 
       return res.json({
         success: true,
