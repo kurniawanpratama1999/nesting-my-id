@@ -6,7 +6,7 @@ export default function Comp_Heading() {
   const noun = params ? 'Update' : 'Create';
   useEffect(() => {}, [params]);
   return (
-    <h1 className='text-center text-3xl font-extrabold mb-5'>
+    <h1 className='text-center text-3xl font-extrabold mb-5 text-gray-300'>
       {noun} Link {params}
     </h1>
   );

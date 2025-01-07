@@ -10,8 +10,8 @@ import Wrapper from '../../components/Wrapper';
 const baseLabel =
   'flex items-center gap-1 overflow-hidden rounded-sm outline outline-1 outline-black/50';
 const baseInput =
-  'bg-transparent py-1 px-2 grow border-0 outline-0 text-black/70 font-mono';
-const baseIcon = 'bg-black/30 h-full text-3xl px-2 text-white/80 min-w-10';
+  'bg-transparent py-1 px-2 grow border-0 outline-0 text-white/80 font-mono';
+const baseIcon = 'bg-black/30 h-full text-3xl px-2 text-white/60 min-w-10';
 
 export default function Comp_CardInput({
   state,
@@ -44,7 +44,7 @@ export default function Comp_CardInput({
       border='lg-b'>
       <label
         htmlFor={`logo-${state?.id}`}
-        className={`${baseLabel} bg-yellow-300 max-md:col-start-1 max-md:col-end-2 max-md:row-start-1 max-md:row-end-2`}>
+        className={`${baseLabel} bg-yellow-700 max-md:col-start-1 max-md:col-end-2 max-md:row-start-1 max-md:row-end-2`}>
         <BiSolidDownArrow className={`${baseIcon}`} />
         <input
           name={`logo-${state?.id}`}
@@ -61,7 +61,7 @@ export default function Comp_CardInput({
       </label>
       <label
         htmlFor={`details-${state?.id}`}
-        className={`${baseLabel} bg-emerald-300 max-md:col-span-3 max-md:row-start-2 max-md:row-end-3`}>
+        className={`${baseLabel} bg-emerald-700 max-md:col-span-3 max-md:row-start-2 max-md:row-end-3`}>
         <BiSolidBookReader className={`${baseIcon}`} />
         <input
           name={`details-${state?.id}`}
@@ -75,7 +75,7 @@ export default function Comp_CardInput({
       </label>
       <label
         htmlFor={`url-${state?.id}`}
-        className={`${baseLabel} bg-blue-300 max-md:col-span-3 max-md:row-start-3 max-md:row-end-4`}>
+        className={`${baseLabel} bg-indigo-700 max-md:col-span-3 max-md:row-start-3 max-md:row-end-4`}>
         <BiWorld className={`${baseIcon}`} />
         <input
           name={`url-${state?.id}`}

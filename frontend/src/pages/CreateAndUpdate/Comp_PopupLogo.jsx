@@ -92,7 +92,7 @@ export default function Comp_PopupLogo({
         }
       }}
       className='fixed grid place-items-center w-full h-full top-0 left-0 bg-black/20 backdrop-blur-sm z-50'>
-      <div className='w-72 h-[70vh] select-none bg-yellow-200 rounded-sm border border-black/50 overflow-y-auto px-2'>
+      <div className='w-72 h-[70vh] select-none bg-yellow-700 rounded-sm border border-zinc-300 overflow-y-auto px-2'>
         {Object.entries(IconCollection)
           .sort()
           .map(([list, details], index) => (
@@ -102,9 +102,9 @@ export default function Comp_PopupLogo({
                 setSelection(list);
                 setIsPopupLogo(false);
               }}
-              className='flex items-center gap-2 text-lg py-3 hover:pl-6 border-b border-gray-500 hover:bg-black/20 px-3 transition-all'>
-              <details.icon className='text-3xl px-1' />
-              <span className='italic capitalize font-semibold'>{list}</span>
+              className='flex items-center gap-2 text-lg py-3 hover:pl-6 border-b border-zinc-300 hover:bg-white/20 px-3 transition-all'>
+              <details.icon className='text-3xl px-1 text-gray-300' />
+              <span className='italic capitalize font-semibold text-gray-200'>{list}</span>
             </div>
           ))}
       </div>
