@@ -14,7 +14,7 @@ export default function Comp_Card({
   return redirect ? (
     <NavLink
       to={redirect}
-      className='rounded-md w-full grid grid-cols-[auto_1fr] items-center gap-x-2 p-2 border border-black bg-green-300 hover:bg-green-500'>
+      className='rounded-md w-full grid grid-cols-[auto_1fr] items-center gap-x-2 p-2 border border-black bg-green-600 hover:bg-green-500 text-emerald-950'>
       <Box
         display='grid'
         className='row-span-2 col-start-1 col-end-2 h-full min-w-14 bg-green-200 border border-green-900 rounded-full place-items-center'>
@@ -26,7 +26,7 @@ export default function Comp_Card({
       />
       <Typograph
         label={info}
-        className='row-start-2 row-end-3 col-start-2 col-end-3'
+        className='row-start-2 row-end-3 col-start-2 col-end-3 text-emerald-100'
       />
     </NavLink>
   ) : (
@@ -34,7 +34,7 @@ export default function Comp_Card({
       display='grid'
       position='static'
       bgColor='none'
-      className='rounded-md w-full grid-cols-[auto_1fr] items-center gap-x-2 p-2 border border-black bg-gray-400'>
+      className='rounded-md w-full grid-cols-[auto_1fr] items-center gap-x-2 p-2 border border-black bg-zinc-400'>
       <Box
         display='grid'
         className='row-span-2 col-start-1 col-end-2 h-full min-w-14 bg-gray-300 border border-gray-900 rounded-full place-items-center'>

@@ -8,7 +8,7 @@ export default function Page_LinkCollection() {
   const { displayName, results } = useContext(LinkContext);
 
   return (
-    <Container display='static' className='gap-x-5 justify-center'>
+    <Container display='static' className='gap-x-5 justify-center text-gray-300'>
       <h1 className='text-3xl col-span-2 text-center font-semibold font-mono mb-5'>
         Welcome {displayName}
       </h1>

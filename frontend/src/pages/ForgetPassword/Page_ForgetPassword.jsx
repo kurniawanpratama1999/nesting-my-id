@@ -8,6 +8,7 @@ import Wrapper from "../../components/Wrapper";
 import { fetcher } from "../../utils/fetcher";
 import api_collection from "../../api/api_collection";
 import cNames from "../../utils/cNames";
+import LoadingMessage from "../../components/LoadingMessage";
 
 const cssLoadingMessage = cNames(
   {
@@ -230,9 +231,9 @@ const Page_ForgetPassword = () => {
 
   return (
     <Container className="relative justify-center items-center">
-      <p className={cssLoadingMessage({isCorrect, isLoading})}>
+      <LoadingMessage isCorrect={isCorrect} isLoading={isLoading}>
         {loadingMessage}
-      </p>
+      </LoadingMessage>
       <Form
         className="px-2 pt-2"
         title="Forgot Password"
@@ -288,7 +289,7 @@ const Page_ForgetPassword = () => {
         <Wrapper display="grid" className="grid-cols-2 gap-4" border="none">
           {step === "email" || (
             <>
-              <div className="col-span-2 text-sm flex flex-col items-center justify-center gap-2">
+              <div className="col-span-2 text-sm flex flex-col items-center justify-center gap-2 text-gray-300">
                 {step === "otp" && !isEnableOtp ? (
                   <>
                     <p>Kirim ulang kode otp</p>

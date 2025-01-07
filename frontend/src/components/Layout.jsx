@@ -32,12 +32,11 @@ function Layout() {
   }, [location.pathname]);
   return (
     <>
-      <Header className="">
-        <Box className="px-3 items-center border-b border-gray-500 bg-neutral-300">
-          <Typograph
-            label="Nesting"
-            className="text-3xl font-bold font-mono text-emerald-800"
-          />
+      <Header>
+        <Box className="px-3 items-center border-b border-zinc-700 bg-zinc-900">
+          <h1 className="text-2xl font-bold font-mono text-green-400">
+            Nesting <span className="text-sm">V.1.0</span>
+          </h1>
           <Menu>
             <List label="Home" redirect="/home" />
             {isAuth ? (
@@ -46,7 +45,11 @@ function Layout() {
                 <List label="Collection" redirect="/collection" />
                 <List label="Profile" redirect="/profile" />
                 <List label="About" redirect="/about" />
-                <button onClick={handleLogout} type="button">
+                <button
+                  className="text-red-500"
+                  onClick={handleLogout}
+                  type="button"
+                >
                   Logout
                 </button>
               </>

@@ -3,7 +3,7 @@ import { NavLink } from 'react-router';
 
 export default function AskingUser() {
   return (
-    <p className='w-full absolute left-0 -bottom-10 text-sm flex justify-center gap-1'>
+    <p className='w-full absolute left-0 -bottom-10 text-sm flex justify-center gap-1 text-gray-300'>
       <span>Already have an account?</span>
       <NavLink
         to='/login'

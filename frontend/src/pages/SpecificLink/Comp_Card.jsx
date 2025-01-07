@@ -8,15 +8,15 @@ export default function Comp_Card({ collections }) {
   return (
     <a
       href={collections.url}
-      className={`w-full flex bg-gray-300 rounded-md overflow-hidden outline outline-1`}>
+      className={`w-full flex bg-zinc-700 rounded-md overflow-hidden`}>
       <div className={`min-w-24 h-24 ${STYLE} grid place-items-center`}>
         <ICON className='text-5xl' />
       </div>
       <div className={`p-2`}>
-        <p className='break-words line-clamp-1 text-sm text-gray-500'>
+        <p className='break-words line-clamp-1 text-sm text-gray-400 italic'>
           {collections.url}
         </p>
-        <p className='break-words line-clamp-2 font-semibold'>
+        <p className='break-words line-clamp-3 font-semibold text-gray-200'>
           {collections.details}
         </p>
       </div>

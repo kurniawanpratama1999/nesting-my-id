@@ -6,6 +6,7 @@ import Input from "../../components/Input";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import hit_api from "../../utils/fetcher";
+import LoadingMessage from "../../components/LoadingMessage";
 
 export default function Page_ChangePassword() {
   const [email, setEmail] = useState("");
@@ -13,7 +14,7 @@ export default function Page_ChangePassword() {
 
   const [isLoading, setIsLoading] = useState(false);
   const [loadingMessage, setLoadingMessage] = useState("Searching Data");
-  const [messageColor, setMessageColor] = useState(null);
+  const [isCorrect, setIsCorrect] = useState(null);
 
   const navigate = useNavigate();
 
@@ -30,12 +31,12 @@ export default function Page_ChangePassword() {
     hit_api(net, "PUT", body)
       .then((res) => {
         setLoadingMessage(res.message);
-        setMessageColor(res.success);
+        setIsCorrect(res.success);
         if (res.success) {
           setTimeout(() => {
             hit_api(api_collection.auth.logout, "DELETE").then((logout) => {
               setLoadingMessage(logout.message);
-              setMessageColor(logout.success);
+              setIsCorrect(logout.success);
               if (logout.success) {
                 navigate("/login", { replace: true });
               }
@@ -48,15 +49,9 @@ export default function Page_ChangePassword() {
   };
   return (
     <Container className="items-center justify-center">
-      {isLoading && (
-        <p
-          className={`absolute top-16 italic text-lg font-semibold ${
-            messageColor ? "text-emerald-700" : "text-red-500"
-          }`}
-        >
-          {loadingMessage}
-        </p>
-      )}
+      <LoadingMessage isCorrect={isCorrect} isLoading={isLoading}>
+        {loadingMessage}
+      </LoadingMessage>
       <Form onSubmit={handleSubmit} title="Change Password">
         <Input
           title="Email"

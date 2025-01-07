@@ -8,13 +8,13 @@ export default function Page_NotFound({
 }) {
   const location = useLocation().pathname;
   return (
-    <Container className='flex-col items-center justify-center gap-3'>
+    <Container className='flex-col items-center justify-center gap-3 text-gray-300'>
       <p className='text-lg italic font-mono'>path: {location}</p>
       <h1 className='text-3xl font-semibold py-3 border-y-2 border-black'>
         {title}
       </h1>
       <p className='italic text-xl'>{information}</p>
-      <NavLink to='/home' className='text-blue-600 font-semibold'>
+      <NavLink to='/home' className='text-blue-400 font-semibold underline underline-offset-4'>
         Go Home
       </NavLink>
     </Container>

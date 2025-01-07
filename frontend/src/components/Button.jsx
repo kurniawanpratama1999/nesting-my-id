@@ -27,15 +27,15 @@ const buttonCss = cNames(
     },
     bgColor: {
       default: 'bg-black text-white active:bg-black/80 hover:bg-black/70',
-      gray: 'bg-gray-700 text-gray-200 active:bg-gray-600/80 hover:bg-gray-500',
-      red: 'bg-red-600 text-red-200 active:bg-red-600/80 hover:bg-red-500',
+      gray: 'bg-gray-400 text-gray-900 active:bg-gray-600/80 hover:bg-gray-500',
+      red: 'bg-red-400 text-red-900 active:bg-red-400/80 hover:bg-red-500',
       emerald:
-        'bg-emerald-600 text-emerald-200 active:bg-emerald-600/80 hover:bg-emerald-500',
-      blue: 'bg-blue-600 text-blue-200 active:bg-blue-600/80 hover:bg-blue-500',
+        'bg-emerald-400 text-emerald-900 active:bg-emerald-400/80 hover:bg-emerald-500',
+      blue: 'bg-blue-400 text-blue-900 active:bg-blue-400/80 hover:bg-blue-500',
       yellow:
-        'bg-yellow-600 text-yellow-200 active:bg-yellow-600/80 hover:bg-yellow-500',
+        'bg-yellow-400 text-yellow-900 active:bg-yellow-400/80 hover:bg-yellow-500',
       amber:
-        'bg-amber-600 text-amber-200 active:bg-amber-600/80 hover:bg-amber-500',
+        'bg-amber-400 text-amber-900 active:bg-amber-400/80 hover:bg-amber-500',
     },
   }
 );

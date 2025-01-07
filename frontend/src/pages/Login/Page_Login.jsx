@@ -4,30 +4,13 @@ import Form from "../../components/Form";
 import Input from "../../components/Input";
 import Button from "../../components/Button";
 import AskingUser from "./AskingUser";
-import cNames from "../../utils/cNames";
 import api_collection from "../../api/api_collection";
 import { useRef } from "react";
 import { useNavigate } from "react-router";
 import hit_api from "../../utils/fetcher";
 import AskingForgetPassword from "./AskingForgetPassword";
-
-const cssLoadingMessage = cNames(
-  {
-    base: "top-16 border-b border-black pb-2 text-lg italic font-semibold",
-  },
-  {
-    isLoading: {
-      true: "fixed",
-      false: "hidden",
-    },
-
-    isCorrect: {
-      true: "text-green-700",
-      false: "text-red-700",
-      null: "text-black",
-    },
-  }
-);
+import LoadingMessage from "../../components/LoadingMessage";
+import Container from "../../components/Container";
 
 export default function Page_Login() {
   const navigate = useNavigate();
@@ -101,13 +84,10 @@ export default function Page_Login() {
   }, []);
 
   return (
-    <Box
-      display="flex"
-      className="relative h-[calc(100vh-3.5rem)] bg-gray-100 p-3 items-center justify-center"
-    >
-      <p className={cssLoadingMessage({ isLoading, isCorrect })}>
+    <Container className="relative items-center justify-center">
+      <LoadingMessage isLoading={isLoading} isCorrect={isCorrect}>
         {loadingMessage}
-      </p>
+      </LoadingMessage>
       <Form onSubmit={handleSubmit} className="px-2 pt-2">
         <Input
           htmlFor="username"
@@ -134,6 +114,6 @@ export default function Page_Login() {
 
         <AskingUser />
       </Form>
-    </Box>
+    </Container>
   );
 }

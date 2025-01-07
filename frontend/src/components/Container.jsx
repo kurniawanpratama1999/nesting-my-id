@@ -19,7 +19,7 @@ export default function Container({
 }
 
 const cssContainer = cNames(
-  { base: 'p-2 bg-gray-300' },
+  { base: 'p-2 bg-zinc-800' },
   {
     width: {
       default: 'w-full',

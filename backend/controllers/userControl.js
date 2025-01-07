@@ -514,7 +514,6 @@ export const userControl = {
       });
     }
   },
-
   changeDisplayName: async (req, res) => {
     // Get id and username From SECRET TOKEN
     const { user_id } = req;
@@ -602,8 +601,9 @@ export const userControl = {
           message: "Update OTP is failed!",
         });
 
-      const salt = bcrpyt.genSaltSync();
-      const convertEmail = bcrpyt.hashSync(email, salt);
+        
+        const salt = bcrpyt.genSaltSync();
+        const convertEmail = bcrpyt.hashSync(email, salt);
       const convertOtp = bcrpyt.hashSync(newOTP, salt);
 
       res
@@ -619,13 +619,13 @@ export const userControl = {
           maxAge: 1000 * 60 * 2,
         });
 
-      const sendOtpToEmail = await transporter.sendMail({
-        from: process.env.SMTP_EMAIL,
-        to: email,
-        subject: "OTP code from nesting.my.id for change password",
-        text: `Hai ${findUser[0].display_name}, this is your otp code: ${newOTP}.`,
-      });
-
+        const sendOtpToEmail = await transporter.sendMail({
+          from: process.env.SMTP_EMAIL,
+          to: email,
+          subject: "OTP code from nesting.my.id for change password",
+          text: `Hai ${findUser[0].display_name}, this is your otp code: ${newOTP}.`,
+        });
+        
       return res.json({
         success: true,
         message: "Email is correct OTP was send to your email!",

@@ -8,16 +8,12 @@ export default function Comp_Actions({
 }) {
   const navigate = useNavigate();
 
-  const handleView = () => {
-    navigate(`/collection/${link}`)
-    setIsCloseActions(false);
-  };
   const handleDelete = () => {
     setIsCloseActions(false);
   };
   const handleUpdate = () => {
     setIsCloseActions(false);
-    navigate(`/update/${link}`)
+    navigate(`/update/${link}`);
   };
   const handleCopy = () => {
     setIsCloseActions(false);
@@ -32,26 +28,20 @@ export default function Comp_Actions({
       }`}
     >
       <button
-        onClick={() => handleView()}
-        className="bg-amber-400 hover:bg-amber-500"
-      >
-        View
-      </button>
-      <button
         onClick={() => handleUpdate()}
-        className="bg-blue-400 hover:bg-blue-500"
+        className="bg-blue-700 hover:bg-blue-600"
       >
         Update
       </button>
       <button
         onClick={() => handleCopy()}
-        className="bg-green-400 hover:bg-green-500"
+        className="bg-green-700 hover:bg-green-600"
       >
         Copy
       </button>
       <button
         onClick={() => handleDelete()}
-        className="bg-red-400 hover:bg-red-500"
+        className="bg-red-700 hover:bg-red-600"
       >
         Delete
       </button>

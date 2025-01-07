@@ -83,7 +83,7 @@ export const userModel = {
     return new Promise((resolve, reject) => {
       const query = `
       SELECT 
-      u.username,
+      u.display_name,
       lc.id AS link_id,
       lc.link,
       lc.description,

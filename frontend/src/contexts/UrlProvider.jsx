@@ -14,7 +14,7 @@ const UrlProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [loadingMessage, setLoadingMessage] = useState('Loading');
 
-  const [username, setUsername] = useState(null);
+  const [displayName, setDisplayName] = useState(null);
   const [description, setDescription] = useState(null);
   const [results, setResults] = useState(null);
 
@@ -26,7 +26,7 @@ const UrlProvider = ({ children }) => {
           setLoadingMessage(res.message);
           if (res.success) {
             setResults(res.results.urls);
-            setUsername(res.results.username);
+            setDisplayName(res.results.display_name);
             setDescription(res.results.description);
             setTimeout(() => {
               setIsLoading(false);
@@ -47,7 +47,7 @@ const UrlProvider = ({ children }) => {
       information={loadingMessage}
     />
   ) : (
-    <UrlContext.Provider value={{ results, username, description }}>
+    <UrlContext.Provider value={{ results, displayName, description }}>
       {children}
     </UrlContext.Provider>
   );

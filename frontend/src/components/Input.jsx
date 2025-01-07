@@ -21,7 +21,7 @@ export default function Input({
       htmlFor={htmlFor}
       className={cssLabel({ bgColor, outlineColor }, classNameLabel)}
     >
-      <p className="absolute -top-[10px] left-3 text-sm italic bg-white px-2 capitalize font-semibold">
+      <p className="absolute -top-[10px] left-3 text-sm italic bg-zinc-900 px-2 capitalize font-semibold text-gray-300">
         {title}
       </p>
       {!isPassword ? (
@@ -48,12 +48,12 @@ export default function Input({
         isShowPassword ? (
           <FaEye
             onClick={() => setIsShowPassword(!isShowPassword)}
-            className="mx-2 cursor-pointer"
+            className="mx-2 cursor-pointer text-gray-300"
           />
         ) : (
           <FaEyeSlash
             onClick={() => setIsShowPassword(!isShowPassword)}
-            className="mx-2 cursor-pointer"
+            className="mx-2 cursor-pointer text-gray-300"
           />
         )
       ) : (
@@ -65,7 +65,7 @@ export default function Input({
 
 const cssLabel = cNames(
   {
-    base: "outline outline-1 outline-black flex items-center pt-4 pb-2 relative rounded-sm",
+    base: "outline outline-1 outline-gray-300 flex items-center pt-4 pb-2 relative rounded-sm",
     space: "mb-5",
     focus: "focus-within:outline-2",
   },
@@ -77,14 +77,14 @@ const cssLabel = cNames(
     },
     outlineColor: {
       emerald:
-        "focus-within:outline-emerald-500 [&_p]:focus-within:text-emerald-700",
-      blue: "focus-within:outline-blue-500 [&_p]:focus-within:text-blue-700",
+        "focus-within:outline-emerald-400 [&_p]:focus-within:text-emerald-400",
+      blue: "focus-within:outline-blue-400 [&_p]:focus-within:text-blue-400",
     },
   }
 );
 
 const cssInput = cNames(
-  { base: "grow bg-transparent autofill:bg-red-500 px-3", nonactive: "border-none outline-none" },
+  { base: "grow bg-zinc-900 text-gray-300 px-3 ", nonactive: "border-none outline-none" },
   {
     lock: {
       true: "readOnly",

@@ -10,7 +10,7 @@ function Page_Home() {
       className="content-center justify-items-center gap-10"
     >
       
-      <h1 className="text-4xl font-semibold font-mono">Nesting My ID</h1>
+      <h1 className="text-4xl font-semibold font-mono text-gray-300">Nesting My ID</h1>
       <Box className="flex-wrap justify-center gap-10">
         <Comp_Card
           bgColor="emerald"
@@ -28,7 +28,7 @@ function Page_Home() {
           description="Buat, Edit, Hapus dan Bagikan link yang kamu miliki"
         />
       </Box>
-      <p className="text-xl px-[20%] text-center text-gray-500">
+      <p className="text-xl px-[20%] text-center text-gray-300">
         Mengelola tautan kini menjadi lebih mudah, kumpulkan semuanya kedalam
         satu link dan nikmati kemudahan dalam mengaturnya.
       </p>
